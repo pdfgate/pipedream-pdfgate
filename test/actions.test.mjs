@@ -281,6 +281,24 @@ test("create-envelope builds documents from the primary document plus additional
   assert.match(exports.$summary, /env_1/);
 });
 
+test("create-envelope lets action-level reminder defaults win over blank recipient values", async () => {
+  const { calls, methods } = stub("createEnvelope", { id: "env_1" });
+  const ctx = buildContext(createEnvelope, {
+    requesterName: "Acme Inc",
+    sourceDocumentId: "doc_1",
+    documentName: "NDA.pdf",
+    recipients: [
+      { email: "a@example.com", name: "A", reminderIntervalDays: null, reminderAttempts: "" },
+    ],
+    reminderIntervalDays: 0,
+    reminderAttempts: 1,
+  }, methods);
+  await createEnvelope.run.call(ctx, buildStep());
+  assert.deepEqual(calls[0].data.documents[0].recipients, [
+    { email: "a@example.com", name: "A", reminderIntervalDays: 0, reminderAttempts: 1 },
+  ]);
+});
+
 test("create-envelope accepts a single JSON array string for recipients", async () => {
   const { calls, methods } = stub("createEnvelope", { id: "env_1" });
   const ctx = buildContext(createEnvelope, {
