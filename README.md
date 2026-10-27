@@ -5,7 +5,7 @@
 # Example Use Cases
 
 - **Invoice generation**: When a new order lands in Stripe, Shopify or your database, render an HTML invoice with **Generate PDF**, then email the pre-signed download link or store the file in Google Drive or S3.
-- **Contract e-signature**: When a deal is marked *Won* in HubSpot or Salesforce, generate the agreement, create an envelope with **Create Envelope**, email the signing links with **Send Envelope**, and use the **Envelope Completed (Instant)** trigger to file the signed document and audit log.
+- **Contract e-signature**: When a deal is marked *Won* in HubSpot or Salesforce, generate the agreement, create an envelope with **Create Envelope**, email the signing links with **Send Envelope**, and use the **New Envelope Completed** trigger to file the signed document and audit log.
 - **Document hardening**: Upload a PDF from Dropbox with **Upload File**, flatten its form fields, stamp a `CONFIDENTIAL` watermark, protect it with a password, and post the result to Slack.
 - **Form intake**: Receive a filled PDF form by email, upload it, and run **Extract PDF Form Data** to push the field values into Airtable or a spreadsheet.
 
@@ -40,8 +40,8 @@ Actions that return a `fileUrl` accept a **Pre-Signed URL Expiry** (60 to 86400 
 
 | Trigger | Event |
 | --- | --- |
-| Envelope Sent (Instant) | `envelope.sent` – an envelope was sent and signing has begun |
-| Envelope Completed (Instant) | `envelope.completed` – every recipient has signed |
+| New Envelope Sent | `envelope.sent` – an envelope was sent and signing has begun |
+| New Envelope Completed | `envelope.completed` – every recipient has signed |
 
 Each trigger registers a PDFGate webhook when the source is deployed and removes it when the source is deleted. Deliveries are verified with the HMAC-SHA256 signature PDFGate sends in the `x-pdfgate-signature` header; requests that fail verification are rejected with a `401` and are not emitted.
 

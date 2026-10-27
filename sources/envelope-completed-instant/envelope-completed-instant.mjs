@@ -7,7 +7,7 @@ import sampleEmit from "./test-event.mjs";
 export default {
   ...common,
   key: "pdfgate-envelope-completed-instant",
-  name: "New Envelope Completed (Instant)",
+  name: "New Envelope Completed",
   description: `Emit new event when all recipients have signed a PDFGate envelope. [See the documentation](${DOCS_URL})`,
   version: "0.0.1",
   type: "source",
