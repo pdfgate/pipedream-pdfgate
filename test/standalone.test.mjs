@@ -3,6 +3,7 @@ import {
 } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { createHmac } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { buildStandalone } from "../scripts/build-standalone.mjs";
 import {
@@ -64,7 +65,7 @@ test("getApp binds the real app methods to the apiKey prop", async () => {
     apiKey: "live_abc",
   });
   assert.equal(live._baseUrl(), "https://api.pdfgate.com");
-  assert.equal(typeof sandbox.verifyWebhookSignature, "function");
+  assert.equal(typeof sandbox.createWebhook, "function");
 });
 
 test("standalone actions run end to end against a stubbed app", async () => {
@@ -134,7 +135,6 @@ test("standalone sources keep hooks, signature check and sample events", async (
           secret: "whsec_1",
         });
       },
-      verifyWebhookSignature: () => true,
     }),
   };
 
@@ -147,9 +147,16 @@ test("standalone sources keep hooks, signature check and sample events", async (
   });
   assert.equal(db.get("webhookId"), "wh_1");
 
+  const bodyRaw = JSON.stringify(component.sampleEmit);
+  const now = Math.floor(Date.now() / 1000);
+  const v1 = createHmac("sha256", "whsec_1").update(`${now}.${bodyRaw}`)
+    .digest("hex");
   await component.run.call(ctx, {
     body: component.sampleEmit,
-    headers: {},
+    bodyRaw,
+    headers: {
+      "x-pdfgate-signature": `t=${now},v1=${v1}`,
+    },
   });
   assert.equal(emitted.length, 1);
   assert.equal(emitted[0].meta.id, component.sampleEmit.eventId);

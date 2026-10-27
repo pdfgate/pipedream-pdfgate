@@ -210,6 +210,26 @@ test("watermark-pdf always sends type=text and coerces numeric strings", async (
   });
 });
 
+test("watermark-pdf rejects an out-of-range opacity", async () => {
+  const ctx = buildContext(watermarkPdf, { documentId: "doc_1", text: "x", opacity: "1.5" }, stub("watermarkPdf").methods);
+  await assert.rejects(() => watermarkPdf.run.call(ctx, buildStep()), /Opacity.*between 0 and 1/);
+});
+
+test("generate-pdf rejects an out-of-range scale", async () => {
+  const ctx = buildContext(generatePdf, { html: "<p/>", scale: "3" }, stub("generatePdf").methods);
+  await assert.rejects(() => generatePdf.run.call(ctx, buildStep()), /Page Scale.*between 0.1 and 2/);
+});
+
+test("every action declares ai: optimized and every prop description has an example", () => {
+  for (const action of ALL_ACTIONS) {
+    assert.equal(action.ai, "optimized", `${action.name} ai`);
+    for (const [name, prop] of Object.entries(action.props)) {
+      if (name === "app" || prop.propDefinition) continue;
+      assert.match(prop.description, /e\.g\. `|Example: `/, `${action.name} prop ${name} has an example`);
+    }
+  }
+});
+
 test("watermark-pdf rejects a non-numeric opacity", async () => {
   const ctx = buildContext(watermarkPdf, { documentId: "doc_1", text: "x", opacity: "abc" }, stub("watermarkPdf").methods);
   await assert.rejects(() => watermarkPdf.run.call(ctx, buildStep()), /Opacity.*must be a number/);
@@ -251,7 +271,7 @@ test("create-envelope builds documents from the primary document plus additional
         sourceDocumentId: "doc_2",
         name: "Annex.pdf",
         recipients: [
-          { email: "c@example.com", name: "C" },
+          { email: "c@example.com", name: "C", reminderIntervalDays: 3, reminderAttempts: 2 },
         ],
       },
     ],

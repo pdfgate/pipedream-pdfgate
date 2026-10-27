@@ -2,6 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
 import app from "../pdfgate.app.mjs";
+import {
+  toNumber, verifyWebhookSignature,
+} from "../common/utils.mjs";
 
 const withAuth = (apiKey) => ({
   ...app.methods,
@@ -67,6 +70,16 @@ test("request helpers hit the expected endpoints", async () => {
   assert.deepEqual(calls[3].params, { preSignedUrlExpiresIn: 60 });
 });
 
+test("app methods contain only API operations (no pure helpers)", () => {
+  assert.equal(app.methods.verifyWebhookSignature, undefined);
+});
+
+test("every shared prop definition has an example value", () => {
+  for (const [name, def] of Object.entries(app.propDefinitions)) {
+    assert.match(def.description, /e\.g\. `|Example: `/, `${name} description has an example`);
+  }
+});
+
 const sign = (secret, timestamp, payload) =>
   createHmac("sha256", secret).update(`${timestamp}.${payload}`).digest("hex");
 
@@ -75,7 +88,7 @@ test("verifyWebhookSignature accepts a valid signature", () => {
   const payload = JSON.stringify({ event: "envelope.sent" });
   const now = 1_700_000_000;
   const header = `t=${now},v1=${sign(secret, now, payload)}`;
-  assert.equal(app.methods.verifyWebhookSignature({ secret, signatureHeader: header, payload, now }), true);
+  assert.equal(verifyWebhookSignature({ secret, signatureHeader: header, payload, now }), true);
 });
 
 test("verifyWebhookSignature accepts a valid signature among several v1 entries", () => {
@@ -83,14 +96,14 @@ test("verifyWebhookSignature accepts a valid signature among several v1 entries"
   const payload = "{}";
   const now = 1_700_000_000;
   const header = `t=${now},v1=deadbeef,v1=${sign(secret, now, payload)}`;
-  assert.equal(app.methods.verifyWebhookSignature({ secret, signatureHeader: header, payload, now }), true);
+  assert.equal(verifyWebhookSignature({ secret, signatureHeader: header, payload, now }), true);
 });
 
 test("verifyWebhookSignature rejects a tampered payload", () => {
   const secret = "whsec_123";
   const now = 1_700_000_000;
   const header = `t=${now},v1=${sign(secret, now, "{\"a\":1}")}`;
-  assert.equal(app.methods.verifyWebhookSignature({ secret, signatureHeader: header, payload: "{\"a\":2}", now }), false);
+  assert.equal(verifyWebhookSignature({ secret, signatureHeader: header, payload: "{\"a\":2}", now }), false);
 });
 
 test("verifyWebhookSignature rejects stale timestamps", () => {
@@ -98,12 +111,22 @@ test("verifyWebhookSignature rejects stale timestamps", () => {
   const payload = "{}";
   const then = 1_700_000_000;
   const header = `t=${then},v1=${sign(secret, then, payload)}`;
-  assert.equal(app.methods.verifyWebhookSignature({ secret, signatureHeader: header, payload, now: then + 301 }), false);
-  assert.equal(app.methods.verifyWebhookSignature({ secret, signatureHeader: header, payload, now: then + 299 }), true);
+  assert.equal(verifyWebhookSignature({ secret, signatureHeader: header, payload, now: then + 301 }), false);
+  assert.equal(verifyWebhookSignature({ secret, signatureHeader: header, payload, now: then + 299 }), true);
 });
 
 test("verifyWebhookSignature rejects missing header or secret", () => {
-  assert.equal(app.methods.verifyWebhookSignature({ secret: "s", signatureHeader: undefined, payload: "{}" }), false);
-  assert.equal(app.methods.verifyWebhookSignature({ secret: undefined, signatureHeader: "t=1,v1=a", payload: "{}" }), false);
-  assert.equal(app.methods.verifyWebhookSignature({ secret: "s", signatureHeader: "garbage", payload: "{}" }), false);
+  assert.equal(verifyWebhookSignature({ secret: "s", signatureHeader: undefined, payload: "{}" }), false);
+  assert.equal(verifyWebhookSignature({ secret: undefined, signatureHeader: "t=1,v1=a", payload: "{}" }), false);
+  assert.equal(verifyWebhookSignature({ secret: "s", signatureHeader: "garbage", payload: "{}" }), false);
+});
+
+test("toNumber coerces, ignores blanks and enforces bounds", () => {
+  assert.equal(toNumber(undefined, "X"), undefined);
+  assert.equal(toNumber("", "X"), undefined);
+  assert.equal(toNumber("0.5", "X", 0, 1), 0.5);
+  assert.equal(toNumber(45, "X", 0, 360), 45);
+  assert.throws(() => toNumber("abc", "X"), /X.*must be a number/);
+  assert.throws(() => toNumber("1.5", "Opacity", 0, 1), /Opacity.*between 0 and 1/);
+  assert.throws(() => toNumber("0.05", "Page Scale", 0.1, 2), /between 0.1 and 2/);
 });
