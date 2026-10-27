@@ -10,7 +10,7 @@ export default {
   key: "pdfgate-flatten-pdf",
   name: "Flatten PDF",
   description: `Flatten an interactive PDF into a static, non-editable PDF. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: false,

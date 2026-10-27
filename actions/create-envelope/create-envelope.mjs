@@ -42,7 +42,7 @@ export default {
   key: "pdfgate-create-envelope",
   name: "Create Envelope",
   description: `Create a signing envelope from one or more existing PDFGate documents. Use **Send Envelope** afterwards to email the recipients. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: false,

@@ -6,7 +6,7 @@ export default {
   key: "pdfgate-get-document",
   name: "Get Document",
   description: `Retrieve a stored PDFGate document by ID, including a pre-signed download URL. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: false,

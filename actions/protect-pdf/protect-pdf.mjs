@@ -10,7 +10,7 @@ export default {
   key: "pdfgate-protect-pdf",
   name: "Protect PDF",
   description: `Encrypt a PDF and optionally apply permission restrictions. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: false,

@@ -5,7 +5,7 @@ export default {
   key: "pdfgate-extract-form-data",
   name: "Extract PDF Form Data",
   description: `Extract form field values from a fillable PDF and return them as a JSON object. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: false,

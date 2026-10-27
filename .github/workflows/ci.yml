@@ -24,5 +24,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Lint (Pipedream registry rules)
+        run: npm run lint:pipedream
+
       - name: Test
         run: npm test

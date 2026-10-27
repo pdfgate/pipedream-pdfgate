@@ -5,7 +5,7 @@ export default {
   key: "pdfgate-send-envelope",
   name: "Send Envelope",
   description: `Send a signing envelope to its recipients. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: false,

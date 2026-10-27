@@ -15,7 +15,7 @@ export default {
   key: "pdfgate-generate-pdf",
   name: "Generate PDF",
   description: `Generate a PDF from a public URL or raw HTML. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: false,

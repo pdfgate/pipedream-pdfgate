@@ -8,7 +8,7 @@ export default {
   key: "pdfgate-upload-file",
   name: "Upload File",
   description: `Upload a PDF from a public URL so it can be used by other PDFGate operations. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: false,

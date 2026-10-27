@@ -5,7 +5,7 @@ export default {
   key: "pdfgate-delete-document",
   name: "Delete Document",
   description: `Delete a stored PDFGate document by ID. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: true,

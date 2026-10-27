@@ -10,7 +10,7 @@ export default {
   key: "pdfgate-compress-pdf",
   name: "Compress PDF",
   description: `Compress a PDF to reduce its file size without changing visual content. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: false,

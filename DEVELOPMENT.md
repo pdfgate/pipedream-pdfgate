@@ -139,9 +139,11 @@ pd deploy sources/envelope-completed-instant/envelope-completed-instant.mjs
 
 1. Fork `PipedreamHQ/pipedream` and copy this directory to `components/pdfgate/`
    (everything except `.github/`, `DEVELOPMENT.md`, `eslint.config.mjs`, `test/` and `LICENSE`).
-2. Run the monorepo's linter (`pnpm lint`) from the fork root and fix any style findings; the monorepo
-   enforces double quotes, trailing commas and one-array-item-per-line formatting, which this repo's
-   ESLint config approximates.
+2. Run `npm run lint:pipedream` here first. `eslint.pipedream.config.mjs` mirrors the style and
+   component rules from the monorepo's root `eslint.config.mjs` (including
+   `@pipedream/eslint-plugin-pipedream`), so a clean run here means a clean run of their
+   `npx eslint components/pdfgate` in the fork. New components must start at version `0.0.1` and
+   source names must start with "New".
 3. Open a PR titled `[Components] pdfgate` describing the actions and sources, and respond to review.
 
 ## Releasing

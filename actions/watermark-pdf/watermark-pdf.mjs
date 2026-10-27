@@ -22,7 +22,7 @@ export default {
   key: "pdfgate-watermark-pdf",
   name: "Watermark PDF",
   description: `Apply a text watermark to a PDF. [See the documentation](${DOCS_URL})`,
-  version: "0.1.0",
+  version: "0.0.1",
   type: "action",
   annotations: {
     destructiveHint: false,
