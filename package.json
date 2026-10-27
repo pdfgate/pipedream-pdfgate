@@ -1,0 +1,40 @@
+{
+  "name": "@pipedream/pdfgate",
+  "version": "0.1.0",
+  "description": "Pipedream PDFGate Components — generate, process, and e-sign PDFs",
+  "main": "pdfgate.app.mjs",
+  "type": "module",
+  "keywords": [
+    "pipedream",
+    "pdfgate",
+    "pdf",
+    "e-signature"
+  ],
+  "homepage": "https://pipedream.com/apps/pdfgate",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pdfgate/pipedream-pdfgate.git"
+  },
+  "author": "PDFGate <support@pdfgate.com> (https://pdfgate.com)",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node --test \"test/**/*.test.mjs\"",
+    "lint": "eslint .",
+    "build:standalone": "node scripts/build-standalone.mjs",
+    "smoke": "node scripts/smoke-test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@pipedream/platform": "^3.2.5"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "@eslint/js": "^9.0.0",
+    "globals": "^15.0.0"
+  }
+}
